@@ -128,7 +128,9 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
           - name: PORT
-            value: "7070"
+            value: "7070" 
+          - name: REDIS_ADDR
+            value: "redis-cart:6379"
         ports:
           - containerPort: 7070
             name: cart-port
@@ -145,15 +147,15 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: product-catalog-app
+  name: email-app
   namespace: default
   labels:
-    app: product-catalog-app
-    dev: productcatalog 
+    app: email-app
+    dev: emailapp 
 spec:
   selector:
     matchLabels:
-      app: product-catalog-app
+      app: email-app
   replicas: 1
   strategy:
     rollingUpdate:
@@ -163,18 +165,18 @@ spec:
   template:
     metadata:
       labels:
-        app: product-catalog-app
+        app: email-app
     spec:
       containers:
-        - name: product-catalog
-          image: anamskenneth/productcatalogservice:2025-07-24
+        - name: emailapp
+          image: anamskenneth/emailservice:2025-07-24
           imagePullPolicy: IfNotPresent
           env: 
           - name: PORT
-            value: "3550"
+            value: "8080"
           ports:
-          - containerPort: 3550
-            name: catalog-port
+          - containerPort: 8080
+            name: email-port
           volumeMounts:
           - name: localvolume
             mountPath: /etc/localdev
@@ -182,3 +184,136 @@ spec:
         - name: localvolume
           hostPath: 
             path: /etc/app
+--- 
+
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: checkout-app 
+  namespace: default 
+  labels: 
+    app: checkout-app 
+    dev: checkoutservice
+spec:
+  selector:
+    matchLabels: 
+      app: checkout-app
+  replicas:  1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25% 
+  template:
+    metadata: 
+      labels: 
+        app: checkout-app 
+    spec: 
+      containers:
+      - name: checkout
+        image: anamskenneth/checkoutservice:2025-07-24
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: PORT
+            value: "5050"
+        ports:
+          - containerPort: 5050
+            name: checkout-port
+        volumeMounts:
+          - name: localvolume
+            mountPath: /etc/localdev
+      volumes:
+        - name: localvolume
+          hostPath: 
+            path: /etc/app
+      
+---
+  
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: recommendation-app 
+  namespace: default
+  labels: 
+    app: recommendation-app 
+    dev: recommendationservice
+spec: 
+  selector: 
+    matchLabels:
+      app: recommendation-app
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels: 
+        app: recommendation-app
+    spec:
+      containers:
+      - name: recommendationservice
+        image: anamskenneth/recommendationservice:2025-07-24
+        imagePullPolicy: IfNotPresent
+        env: 
+        - name: PORT 
+          value: "8080" 
+        - name: PRODUCT_CATALOG_SERVICE_ADDR
+          value: "productcatalogservice:3550"
+        ports:
+          - containerPort: 8080
+            name: recommend-port
+        volumeMounts:
+          - name: localvolume
+            mountPath: /etc/localdev
+      volumes:
+        - name: localvolume
+          hostPath: 
+            path: /etc/app 
+
+---
+
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: currency-app 
+  namespace: default 
+  labels: 
+    app: currency-app 
+    dev: currencyservice
+spec: 
+  selector:
+    matchLabels: 
+      app: currency-app 
+  replicas: 1
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata: 
+      labels:
+        app: currency-app
+    spec: 
+      containers: 
+        - name: currency-app
+          image: anamskenneth/currencyservice:2025-07-24
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "7000"
+          ports:
+            - containerPort: 7000
+              name: currency-port
+          volumeMounts:
+            - name: localvolume
+              mountPath: /etc/localdev 
+      volumes:
+        - name: localvolume
+          hostPath:
+            path: /etc/app 
+
+--- 
+
