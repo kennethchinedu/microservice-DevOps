@@ -24,7 +24,17 @@ SERVICES= adservice productcatalogservice cartservice checkoutservice currencyse
 docker-run:
 	docker build -t adservice src/adservice/.
 
-loop:
+docker-build:
 	for service in $(SERVICES); do \
 		docker build -t $(IMAGE_DIRECTORY)/$$service:$(IMAGE_TAG) src/$$service/.; \
 	done
+
+docker-push:
+	for service in $(SERVICES); do \
+		docker push $(IMAGE_DIRECTORY)/$$service:2025-07-24; \
+	done 
+
+# docker-run:
+# 	for service in $(SERVICES); do \
+# 		docker run -d --name $$service -p 8080:8080 $(IMAGE_DIRECTORY)/$$service:$(IMAGE_TAG); \
+# 	done 
