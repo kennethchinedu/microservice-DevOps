@@ -2,10 +2,10 @@ IMAGE_REG ?= docker.io
 IMAGE_DIRECTORY ?= anamskenneth
 
 
-AD_SERVICE_IMAGE := adservice
-CART_SERVICE_IMAGE := cartservice
+AD_SERVICE_IMAGE := adservice #
+CART_SERVICE_IMAGE := cartservice #
 CHECKOUT_SERVICE_IMAGE := checkoutservice
-CURRENCY_SERVICE_IMAGE := currencyservice
+CURRENCY_SERVICE_IMAGE := currencyservice #
 EMAIL_SERVICE_IMAGE := emailservice
 FRONTEND_IMAGE := frontend
 LOAD_GENERATOR_IMAGE := loadgenerator
@@ -17,7 +17,7 @@ SHIPPING_SERVICE_IMAGE := shippingservice
 IMAGE_TAG ?=$(shell date +%Y-%m-%d)
 
 SERVICES= adservice productcatalogservice cartservice checkoutservice currencyservice emailservice \
-		 frontend loadgenerator paymentservice recommendationservice shippingservice
+		  loadgenerator paymentservice recommendationservice shippingservice
 
 
 
@@ -34,7 +34,7 @@ docker-push:
 		docker push $(IMAGE_DIRECTORY)/$$service:2025-07-24; \
 	done 
 
-# docker-run:
-# 	for service in $(SERVICES); do \
-# 		docker run -d --name $$service -p 8080:8080 $(IMAGE_DIRECTORY)/$$service:$(IMAGE_TAG); \
-# 	done 
+docker-run:
+	for service in $(SERVICES); do \
+		docker run -d   $(IMAGE_DIRECTORY)/$$service:2025-07-24; \
+	done 

@@ -1,14 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myjob
+  name: frontend-app
   namespace: default
   labels:
-    app: myjob
+    app: frontend-app
+    dev: frontend
 spec:
   selector:
     matchLabels:
-      app: myjob
+      app: frontend-app
   replicas: 1
   strategy:
     rollingUpdate:
@@ -18,62 +19,166 @@ spec:
   template:
     metadata:
       labels:
-        app: myjob
+        app: frontend-app
     spec:
-      # initContainers:
-        # Init containers are exactly like regular containers, except:
-          # - Init containers always run to completion.
-          # - Each init container must complete successfully before the next one starts.
       containers:
-      - name: myjob
-        image: myjob:latest
+      - name: frontend
+        image: anamskenneth/frontend:2025-07-24
         imagePullPolicy: IfNotPresent
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-          limits:
-            cpu: 100m
-            memory: 100Mi
-        livenessProbe:
-          tcpSocket:
-            port: 80
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 3
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /_status/healthz
-            port: 80
-          initialDelaySeconds: 5
-          timeoutSeconds: 2
-          successThreshold: 1
-          failureThreshold: 3
-          periodSeconds: 10
         env:
-        - name: ACCEPT_EULA
-          value: "Y"
-        - name: DB_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: myjob
-              key: DB_HOST
-        - name: DB_HOST
-          valueFrom:
-            secretKeyRef:
-              name: myjob
-              key: MSSQL_SA_PASSWORD
+        - name: PORT
+          value: "8080"
+        - name: PRODUCT_CATALOG_SERVICE_ADDR
+          value: "productcatalogservice:3550"
+        - name: CURRENCY_SERVICE_ADDR
+          value: "currencyservice:7000"
+        - name: CART_SERVICE_ADDR
+          value: "cartservice:7070"
+        - name: RECOMMENDATION_SERVICE_ADDR
+          value: "recommendationservice:8080"
+        - name: SHIPPING_SERVICE_ADDR
+          value: "shippingservice:50051"
+        - name: CHECKOUT_SERVICE_ADDR
+          value: "checkoutservice:5050"
+        - name: AD_SERVICE_ADDR
+          value: "adservice:9555"
         ports:
-        - containerPort: 80
-          name: myjob
+        - containerPort: 8080
+          name: frontend-port
         volumeMounts:
-        - name: localtime
-          mountPath: /etc/localtime
+        - name: localvolume
+          mountPath: /etc/localdev
       volumes:
-        - name: localtime
+        - name: localvolume
           hostPath:
-            path: /usr/share/zoneinfo/Asia/Taipei
-      restartPolicy: Always
+            path: /etc/app
+      # restartPolicy: Always
 ---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-catalog-app
+  namespace: default
+  labels:
+    app: product-catalog-app
+    dev: productcatalog 
+spec:
+  selector:
+    matchLabels:
+      app: product-catalog-app
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: product-catalog-app
+    spec:
+      containers:
+        - name: product-catalog
+          image: anamskenneth/productcatalogservice:2025-07-24
+          imagePullPolicy: IfNotPresent
+          env: 
+          - name: PORT
+            value: "3550"
+          ports:
+          - containerPort: 3550
+            name: catalog-port
+          volumeMounts:
+          - name: localvolume
+            mountPath: /etc/localdev
+      volumes:
+        - name: localvolume
+          hostPath: 
+            path: /etc/app
+
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: cart-app
+  namespace: default
+  labels:
+    app: cart-app
+    dev: cartservice 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart-app
+    
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    
+  template:
+    metadata:
+      labels:
+        app: cart-app
+    spec:
+      containers:
+      - name: cartservice
+        image: anamskenneth/cartservice:2025-07-24
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: PORT
+            value: "7070"
+        ports:
+          - containerPort: 7070
+            name: cart-port
+        volumeMounts:
+          - name: localvolume
+            mountPath: /etc/localdev
+      volumes:
+        - name: localvolume
+          hostPath: 
+            path: /etc/app
+
+--- 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-catalog-app
+  namespace: default
+  labels:
+    app: product-catalog-app
+    dev: productcatalog 
+spec:
+  selector:
+    matchLabels:
+      app: product-catalog-app
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: product-catalog-app
+    spec:
+      containers:
+        - name: product-catalog
+          image: anamskenneth/productcatalogservice:2025-07-24
+          imagePullPolicy: IfNotPresent
+          env: 
+          - name: PORT
+            value: "3550"
+          ports:
+          - containerPort: 3550
+            name: catalog-port
+          volumeMounts:
+          - name: localvolume
+            mountPath: /etc/localdev
+      volumes:
+        - name: localvolume
+          hostPath: 
+            path: /etc/app
