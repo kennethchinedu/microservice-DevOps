@@ -16,17 +16,20 @@ SHIPPING_SERVICE_IMAGE := shippingservice
 
 IMAGE_TAG ?=$(shell date +%Y-%m-%d)
 
-SERVICES= adservice productcatalogservice cartservice checkoutservice currencyservice emailservice \
-		  loadgenerator paymentservice recommendationservice shippingservice
+# SERVICES= adservice productcatalogservice cartservice checkoutservice currencyservice emailservice \
+# 		  loadgenerator paymentservice recommendationservice shippingservice
 
 
+
+SERVICES=     checkoutservice \
+# 		     
 
 docker-run:
 	docker build -t adservice src/adservice/.
 
 docker-build:
 	for service in $(SERVICES); do \
-		docker build -t $(IMAGE_DIRECTORY)/$$service:$(IMAGE_TAG) src/$$service/.; \
+		docker build -t $(IMAGE_DIRECTORY)/$$service:2025-07-24 src/$$service/.; \
 	done
 
 docker-push:

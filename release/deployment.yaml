@@ -356,3 +356,131 @@ spec:
         - name: localvolume
           hostPath:
             path: /etc/app
+
+--- 
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: shipping-app 
+  namespace: default 
+  labels: 
+    app: shipping-app 
+    dev: shippingservice
+spec: 
+  selector: 
+    matchLabels:
+      app: shipping-app
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels: 
+        app: shipping-app
+    spec:
+      containers: 
+        - name: shipping-app
+          image: anamskenneth/shippingservice:2025-07-24
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "50051"
+          ports:
+            - containerPort: 50051
+              name: shipping-port
+          volumeMounts:
+            - name: localvolume
+              mountPath: /etc/localdev 
+      volumes:
+        - name: localvolume
+          hostPath:
+            path: /etc/app
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-app
+  namespace: default
+  labels:
+    app: payment-app
+    dev: paymentservice
+spec:
+  selector:
+    matchLabels:
+      app: payment-app  
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: payment-app
+    spec:
+      containers:
+        - name: paymentservice
+          image: anamskenneth/paymentservice:2025-07-24
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "5000"
+          ports:
+            - containerPort: 5000
+              name: payment-port
+          volumeMounts:
+            - name: localvolume
+              mountPath: /etc/localdev
+      volumes:
+        - name: localvolume
+          hostPath:
+            path: /etc/app 
+
+--- 
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: load-generator-app
+#   namespace: default
+#   labels:
+#     app: load-generator-app
+#     dev: loadgenerator
+# spec:
+#   selector:
+#     matchLabels:
+#       app: load-generator-app
+#   replicas: 1
+#   strategy:
+#     rollingUpdate:
+#       maxSurge: 25% 
+#       maxUnavailable: 25%
+#     type: RollingUpdate
+#   template:
+#     metadata:
+#       labels:
+#         app: load-generator-app
+#     spec:
+#       containers:
+#         - name: loadgenerator
+#           image: anamskenneth/loadgenerator:2025-07-24
+#           imagePullPolicy: IfNotPresent
+#           env:
+#             - name: PORT
+#               value: "8080"
+#           ports:
+#             - containerPort: 8080
+#               name: loadgen-port
+#           volumeMounts:
+#             - name: localvolume
+#               mountPath: /etc/localdev
+#       volumes:
+#         - name: localvolume
+#           hostPath: 
+#             path: /etc/app
