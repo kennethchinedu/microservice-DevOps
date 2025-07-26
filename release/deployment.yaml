@@ -315,6 +315,7 @@ spec:
           hostPath:
             path: /etc/app 
 
+
 --- 
 apiVersion: apps/v1
 kind: Deployment 
