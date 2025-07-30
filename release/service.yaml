@@ -10,8 +10,8 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8080
-      # nodePort: 30080
-  # type: NodePort
+      nodePort: 30080
+  type: NodePort
   
   
   # loadBalancerIP:
@@ -162,5 +162,5 @@ spec:
             backend:
               service:
                 name: frontend-service
-            1    port:
+                port:
                   number: 80 
