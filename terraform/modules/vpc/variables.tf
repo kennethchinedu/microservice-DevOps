@@ -22,3 +22,19 @@ variable "availability_zones" {
   type        = list(string)
    
 }
+
+
+# defining route table association locals
+locals {
+  public_subnet_ids = {
+   pubsub1 = aws_subnet.pubsub1.id,
+   pubsub2 = aws_subnet.pubsub2.id
+  }
+}
+
+locals {
+  private_subnet_ids = {
+   prisub1 = aws_subnet.prisub1.id,
+   prisub2 = aws_subnet.prisub2.id
+  }
+}

@@ -18,6 +18,16 @@ module "eks" {
   # vpc_id = module.vpc.vpc_id
   prisub2 = module.vpc.prisub2
   prisub1 = module.vpc.prisub1
+  security_group_id = module.security.security_group_id
+
+
+}
+
+
+module "security" {
+  source             = "./modules/security"
+  vpc_id           = module.vpc.vpc_id 
+  vpc_cidr = module.vpc.vpc_cidr
 
 
 }

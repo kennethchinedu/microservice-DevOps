@@ -9,3 +9,10 @@ variable "prisub2" {
   type        = string
 
 }
+
+variable "security_group_id" {
+  description = "ID of the security group"
+  type        = string
+  
+}
+
