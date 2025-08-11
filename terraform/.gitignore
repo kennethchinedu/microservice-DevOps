@@ -2,3 +2,5 @@
 *info
 terraform.tfstate*
 .terraform 
+*json
+*helm

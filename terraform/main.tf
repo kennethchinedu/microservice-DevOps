@@ -10,6 +10,10 @@ module "vpc" {
   subnet_cidr        = var.subnet_cidr
   region             = var.region
   availability_zones = var.availability_zones
+  # lb_sg_id = module.security.lb_sg_id  
+  
+  eks_node_group_id = module.eks.eks_node_group_id
+  eks_node_group_name = module.eks.eks_node_group_name
 
 }
 
@@ -18,8 +22,9 @@ module "eks" {
   # vpc_id = module.vpc.vpc_id
   prisub2 = module.vpc.prisub2
   prisub1 = module.vpc.prisub1
-  security_group_id = module.security.security_group_id
-
+  pubsub1 = module.vpc.pubsub1
+  pubsub2 = module.vpc.pubsub2
+  eks_nodes_sg = module.security.eks_nodes_sg
 
 }
 

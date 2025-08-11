@@ -117,3 +117,96 @@ resource "aws_route_table_association" "rt_association2" {
 }
 
 
+
+
+###### LOAD BALANCER ########
+
+# #Data for eks node group
+data "aws_instances" "eks_nodes" {
+  filter {
+    name   = "tag:eks:eks-node-group"
+    values = [var.eks_node_group_id]
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
+
+
+  depends_on = [var.eks_node_group_name]
+  
+}
+
+
+# resource "aws_lb" "app_load_balancer" {
+#   name               = "app-load-balancer"
+#   internal           = false
+#   load_balancer_type = "application"
+#   security_groups    = [var.lb_sg_id]
+#   subnets            = values(local.public_subnet_ids) 
+
+#   enable_deletion_protection = false
+
+#   # access_logs {
+#   #   bucket  = "loki-devops-clisha1"
+#   #   prefix  = "test-lb"
+#   #   enabled = true
+#   # }
+
+#   tags = {
+#     Environment = "production"
+#   }
+# }
+
+# #Load balancing target group for frontend service
+# resource "aws_lb_target_group" "frontend_tg" {
+#   name     = "app-load-balancer-tg"
+#   port     = 30080
+#   protocol = "HTTP"
+#   vpc_id   = aws_vpc.main.id
+
+#   health_check {
+#     enabled             = true
+#     path                = "/"
+#     protocol            = "HTTP"
+#     matcher             = "200"
+#     interval            = 30
+#     timeout             = 5
+#     healthy_threshold   = 3
+#     unhealthy_threshold = 3
+#   }
+# }
+
+# #Getting the auto scaling group from eks node group and attaching to alb
+# data "aws_autoscaling_groups" "eks_node_asgs" {
+#   filter {
+#     name   = "tag:ekseks-node-group"
+#     values = [var.eks_node_group_name]  
+#   }
+# } 
+
+# # ## Target group attachment to the EC2 instance
+# resource "aws_lb_target_group_attachment" "frontend_tg_attach" {
+#   for_each         = toset(data.aws_autoscaling_groups.eks_node_asgs.names)
+#   target_group_arn = aws_lb_target_group.frontend_tg.arn
+#   target_id        = each.value
+#   port             = 30080
+ 
+#   depends_on = [
+#     aws_lb.app_load_balancer,
+#     aws_lb_target_group.frontend_tg
+#   ]
+# }
+
+# resource "aws_lb_listener" "frontend_listener" {
+#   # for_each          = local.public_subnet_ids
+#   load_balancer_arn = aws_lb.app_load_balancer.arn
+#   port              = 80
+#   protocol          = "HTTP"
+
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.frontend_tg.arn
+#   }
+# }

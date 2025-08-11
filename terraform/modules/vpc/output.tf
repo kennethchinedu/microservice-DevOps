@@ -11,6 +11,13 @@ output "prisub1" {
   value = aws_subnet.prisub1.id
 }
 
+output "pubsub2" {
+  value = aws_subnet.prisub2.id
+}
+output "pubsub1" {
+  value = aws_subnet.prisub1.id
+}
+
 output "vpc_cidr" {
 
   value = var.vpc_cidr

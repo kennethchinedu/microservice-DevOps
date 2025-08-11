@@ -24,13 +24,13 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 }
 
 resource "aws_eks_cluster" "cluster_node" {
-  name     = "my_cluster2"
+  name     = "my-cluster"
   role_arn = aws_iam_role.eks-cluster-role.arn
   vpc_config {
     endpoint_private_access = true
     endpoint_public_access  = true
     subnet_ids = [
-      var.prisub1,
+      var.prisub1, #!!!!!!CHANGE THIS TO  PRIVATE SUBNETS!!!!!!!!!!
       var.prisub2
 
     ]
@@ -103,12 +103,12 @@ resource "aws_iam_role_policy_attachment" "eks-ng-ContainerRegistryReadOnly" {
 
 
 resource "aws_eks_node_group" "eks-node-group" {
-  cluster_name    = "my_cluster2"
+  cluster_name    = "my-cluster"
   node_role_arn   = aws_iam_role.eks-ng-role.arn
   node_group_name = "eks-node-group"
   subnet_ids = [
-    var.prisub1,
-    var.prisub2
+    var.pubsub1,           #!!!!!!CHANGE THIS TO  PRIVATE SUBNETS!!!!!!!!!!
+    var.pubsub2
 
   ]
   # launch_template {
@@ -125,7 +125,7 @@ resource "aws_eks_node_group" "eks-node-group" {
   }
 
   remote_access {
-    source_security_group_ids = [var.security_group_id]
+    source_security_group_ids = [var.eks_nodes_sg]
     ec2_ssh_key               = "kube-demo" 
     
   }
