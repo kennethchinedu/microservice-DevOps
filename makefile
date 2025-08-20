@@ -53,6 +53,9 @@ switch_to_cluster:
 enable_iam_sa_provider:
 	eksctl utils associate-iam-oidc-provider --cluster=my-cluster --approve
 
+
+
+
 create_cluster_role:
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
 
@@ -67,7 +70,7 @@ create_service_account:
       --cluster=my-cluster \
       --namespace=kube-system \
       --name=aws-load-balancer-controller \
-      --attach-policy-arn=arn:aws:iam::617960797257:policy/AWSLoadBalancerControllerIAMPolicy \
+      --attach-policy-arn=arn:aws:iam::471112894147:policy/AWSLoadBalancerControllerIAMPolicy \
       --override-existing-serviceaccounts \
       --approve
 
@@ -75,10 +78,13 @@ install_helm:
 	curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 	chmod 700 get_helm.sh
 	./get_helm.sh
+	
 
-install_alb_ingress_controller:
+install_helm:
 	helm repo add eks https://aws.github.io/eks-charts
  	helm repo update eks
+
+install_alb_ingress_controller:
  	helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   	-n kube-system \
   	--set clusterName=my-cluster \
