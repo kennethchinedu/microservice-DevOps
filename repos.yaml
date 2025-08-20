@@ -1,0 +1,49 @@
+# repos.yaml
+# Allow repos to override the workflow key.
+repos:
+- id: /.*/
+  allowed_overrides: [workflow]
+
+
+workflows:
+  staging:
+    plan: 
+      steps:
+      - init
+      - plan:
+          extra_args: ["-var-file", "staging.tfvars"]
+
+  production:
+    plan:
+      steps:
+      - init
+      - plan:
+          extra_args: ["-var-file", "production.tfvars"]
+    apply:
+      steps:
+        - apply:
+            extra_args: ["-var-file", "production.tfvars"] 
+
+        
+
+
+
+
+# Define your custom workflows.
+# workflows:
+#   min-infra:
+#     plan:
+#       steps:
+#       - init
+#       - run: my custom plan command
+#     apply:
+#       steps:
+#       - run: my custom apply command
+
+#   custom2:
+#     plan:
+#       steps:
+#       - run: another custom command
+#     apply:
+#       steps:
+#       - run: another custom command
