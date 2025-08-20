@@ -1,5 +1,26 @@
 version: 3
-projects:
-  - dir: terraform
-    workflow: default
+automerge: false
+parallel_plan: true
+parallel_apply: false
 
+projects:
+  - name: main-infra
+    dir: terraform
+    workspace: default
+    autoplan:
+      when_modified: ["*.tf", "../modules/**/*.tf"]
+      enabled: true
+    workflow: terragrunt # if you’re not using terragrunt, rename to "default"
+
+workflows:
+  default:
+    plan:
+      steps:
+        - init:
+            extra_args: ["-input=false", "-upgrade"]
+        - plan:
+            extra_args: ["-lock=false", "-input=false", "-out=plan.out"]
+    apply:
+      steps:
+        - apply:
+            extra_args: ["-input=false", "plan.out"]
