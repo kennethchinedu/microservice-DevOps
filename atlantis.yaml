@@ -24,3 +24,4 @@ workflows:
       steps:
         - apply:
             extra_args: ["-input=false", "plan.out"]
+
