@@ -63,3 +63,4 @@ resource "aws_security_group" "eks_nodes_sg" {
     Name = "eks-nodes-sg"
   }
 }
+
