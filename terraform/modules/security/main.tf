@@ -35,6 +35,13 @@
 # }
 
 
+#Getting cluster name from eks module to use in security group names and descriptions
+
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster_name
+}
+
+
 # Security group for EKS worker nodes
 resource "aws_security_group" "eks_nodes_sg" {
   name        = "eks-nodes-sg"
@@ -51,6 +58,16 @@ resource "aws_security_group" "eks_nodes_sg" {
     # security_groups  = [aws_security_group.lb_sg.id] # Restrict to LB SG
   }
 
+   ingress {
+    description      = "Allow access from control plane to webhook port of AWS load balancer controller"
+    from_port        = 9443
+    to_port          = 9443
+    protocol         = "tcp"
+    security_groups  = [data.aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id]
+  }
+
+  
+
   # Allow all outbound traffic
   egress {
     from_port   = 0
@@ -63,4 +80,5 @@ resource "aws_security_group" "eks_nodes_sg" {
     Name = "eks-nodes-sg"
   }
 }
+
 

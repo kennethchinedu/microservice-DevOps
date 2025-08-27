@@ -33,6 +33,7 @@ module "security" {
   source             = "./modules/security"
   vpc_id           = module.vpc.vpc_id 
   vpc_cidr = module.vpc.vpc_cidr
+  cluster_name = module.eks.eks_cluster_name
 
 
 }
