@@ -122,21 +122,21 @@ resource "aws_route_table_association" "rt_association2" {
 ###### LOAD BALANCER ########
 
 # #Data for eks node group
-data "aws_instances" "eks_nodes" {
-  filter {
-    name   = "tag:eks:eks-node-group"
-    values = [var.eks_node_group_id]
-  }
+# data "aws_instances" "eks_nodes" {
+#   filter {
+#     name   = "tag:eks:eks-node-group"
+#     values = [var.eks_node_group_id]
+#   }
 
-  filter {
-    name   = "instance-state-name"
-    values = ["running"]
-  }
+#   filter {
+#     name   = "instance-state-name"
+#     values = ["running"]
+#   }
 
 
-  depends_on = [var.eks_node_group_name]
+#   depends_on = [var.eks_node_group_name]
   
-}
+# }
 
 
 # resource "aws_lb" "app_load_balancer" {

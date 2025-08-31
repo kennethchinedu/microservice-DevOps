@@ -12,8 +12,8 @@ module "vpc" {
   availability_zones = var.availability_zones
   # lb_sg_id = module.security.lb_sg_id  
   
-  eks_node_group_id = module.eks.eks_node_group_id
-  eks_node_group_name = module.eks.eks_node_group_name
+  # eks_node_group_id = module.eks.eks_node_group_id
+  # eks_node_group_name = module.eks.eks_node_group_name
 
 }
 
@@ -25,7 +25,8 @@ module "eks" {
   pubsub1 = module.vpc.pubsub1
   pubsub2 = module.vpc.pubsub2
   eks_nodes_sg = module.security.eks_nodes_sg
-
+  vpc_id           = module.vpc.vpc_id 
+  
 }
 
 
@@ -34,6 +35,7 @@ module "security" {
   vpc_id           = module.vpc.vpc_id 
   vpc_cidr = module.vpc.vpc_cidr
   cluster_name = module.eks.eks_cluster_name
+
 
 
 }

@@ -39,6 +39,10 @@
 
 data "aws_eks_cluster" "cluster" {
   name = var.cluster_name
+
+  depends_on = [ var.cluster_name ]
+
+  #This waits until the cluster is active
 }
 
 

@@ -29,17 +29,17 @@ variable "availability_zones" {
   
 # }
 
-variable "eks_node_group_id" {
-  description = "ID of the EKS node group"
-  type        = string
+# variable "eks_node_group_id" {
+#   description = "ID of the EKS node group"
+#   type        = string
   
-}
+# }
 
-variable "eks_node_group_name" {
-  description = "Name of the EKS node group"
-  type        = string
+# variable "eks_node_group_name" {
+#   description = "Name of the EKS node group"
+#   type        = string
   
-}
+# }
 # defining route table association locals
 locals {
   public_subnet_ids = {

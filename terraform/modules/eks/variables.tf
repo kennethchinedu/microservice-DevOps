@@ -28,3 +28,12 @@ variable "eks_nodes_sg" {
   
 }
 
+variable "eks_addons" {
+  default = ["coredns", "kube-proxy", "vpc-cni", "eks-pod-identity-agent"]
+}
+
+variable "vpc_id" {
+  description = "ID of the VPC"
+  type        = string
+  
+}
