@@ -4,7 +4,7 @@ metadata:
   name: microservice
   namespace: argocd
 spec:
-  project: default
+  project: microservice-project
   source:
     repoURL: 'https://github.com/kennethchinedu/microservice-DevOps'
     path: release
