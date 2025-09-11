@@ -2,14 +2,49 @@
 
 #Disabling  default project
 
+# apiVersion: argoproj.io/v1alpha1
+# kind: AppProject
+# metadata:
+#   name: default
+# spec:
+#   sourceRepos: []
+#   sourceNamespaces: []
+#   destinations: []
+#   namespaceResourceBlacklist:
+#   - group: '*'
+#     kind: '*' 
+
+
+
+#Enabling new project
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: default
+  name: microservice-project
+  namespace: argocd
 spec:
-  sourceRepos: []
-  sourceNamespaces: []
-  destinations: []
+  description: Microservice Project
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: '*'
+      server: 'in-cluster'
+  clusterResourceWhitelist:
+    - group: '*' 
+      kind: '*'
   namespaceResourceBlacklist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: 'NetworkPolicy' # Restricting NetworkPolicy changes for security reasons
+  # roles:
+  #   - name: dev
+  #     description: dev role with full permissions
+  #     policies:
+  #       - p, role:dev, applications, *, microservice-project/*, allow
+  #       - p, role:dev, projects, get, microservice-project, allow
+  #     groups:
+  #       - dev-team
+  #   - name: read-only
+  #     description: read-only role with view permissions
+  #     policies:
+  #       - p, role:read-only, applications, get, microservice-project/*, allow
+  #       - p, role:read-only, applications, sync, microservice-project/*, allow
