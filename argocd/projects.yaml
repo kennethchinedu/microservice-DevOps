@@ -27,8 +27,8 @@ spec:
   sourceRepos:
     - 'https://github.com/kennethchinedu/microservice-DevOps' 
   destinations:
-    - namespace: '*'
-      server: 'https://kubernetes.default.svc'
+    - namespace: 'shop-app'
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*' 
       kind: '*'
