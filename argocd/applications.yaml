@@ -12,7 +12,7 @@ spec:
     directory:
       recurse: true
   destination:
-    name: 'in-cluster'
+    server: 'in-cluster'
     namespace: default
   syncPolicy:
     automated:
