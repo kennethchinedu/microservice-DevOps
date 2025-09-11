@@ -1,0 +1,15 @@
+# We will deactivate default argocd project and create a different project to improve security
+
+#Disabling  default project
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: default
+spec:
+  sourceRepos: []
+  sourceNamespaces: []
+  destinations: []
+  namespaceResourceBlacklist:
+  - group: '*'
+    kind: '*'
